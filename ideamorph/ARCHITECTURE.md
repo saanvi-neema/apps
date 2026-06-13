@@ -14,7 +14,7 @@ novelty, diversity, and usefulness.
 ## System Diagram
 
 ```
-Browser (frontend)
+FRONTEND  (Browser)
 │
 │  index.html      — page shell, font/script imports
 │  style.css       — parchment warm theme, all component styles
@@ -23,9 +23,9 @@ Browser (frontend)
 │  dashboard.js    — right-panel: line chart, generation cards, stats
 │
 │         HTTP (JSON)
+│
+BACKEND  (Python / FastAPI)
 │  ┌──────────────────────────────┐
-│  │  FastAPI (Python backend)    │
-│  │                              │
 │  │  main.py        — routes     │
 │  │  models.py      — schemas    │
 │  │  session_store.py — memory   │
