@@ -11,6 +11,18 @@ novelty, diversity, and usefulness.
 
 ---
 
+## Neural Networks Used
+
+Two neural networks power the app, with very different roles:
+
+**`all-MiniLM-L6-v2`** — a 22M parameter transformer (BERT-based, MiniLM architecture) from the `sentence-transformers` library. Runs locally on the server with no API key. It takes any text and outputs a 384-dimensional vector (an "embedding") that captures its meaning. Similar ideas end up with similar vectors. This is used for everything mathematical: novelty scoring, diversity scoring, placing human ideas next to their semantic neighbors, and computing session-wide spread.
+
+**Llama 3.3-70b`** — a 70 billion parameter large language model, accessed via the Groq API. Handles everything that requires language understanding and generation: producing seed ideas, writing hybrid offspring, extracting principles from parent ideas, and judging usefulness (feasibility, impact, specificity).
+
+The division is deliberate — the small local transformer handles fast, cheap similarity math, while the large remote LLM handles open-ended reasoning and generation.
+
+---
+
 ## System Diagram
 
 ```
