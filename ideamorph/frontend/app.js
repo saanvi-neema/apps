@@ -370,36 +370,14 @@ const App = (() => {
     if (tag) tag.remove();
 
     try {
-      const idea = await api('/api/add-human-idea', {
+      const res = await api('/api/add-human-idea', {
         session_id: sessionId,
         text,
         parent_ids: parentIds,
       });
+      const idea = res.idea;
+      const mostSimilarId = res.most_similar_id;
       allIdeas.push(idea);
-
-      // Find the most similar existing node in the same generation,
-      // so the human idea appears visually next to its closest semantic neighbor.
-      let mostSimilarId = null;
-      try {
-        const sims = await api(`/api/similarities/${sessionId}`);
-        if (sims?.pairs) {
-          const sameGen = allIdeas
-            .filter(d => d.generation === idea.generation && d.id !== idea.id)
-            .map(d => d.id);
-          let maxSim = -1;
-          for (const p of sims.pairs) {
-            let otherId = null;
-            if (p.source === idea.id) otherId = p.target;
-            else if (p.target === idea.id) otherId = p.source;
-            if (otherId && sameGen.includes(otherId) && p.similarity > maxSim) {
-              maxSim = p.similarity;
-              mostSimilarId = otherId;
-            }
-          }
-        }
-      } catch (e) {
-        console.warn('Similarity fetch failed, using default placement', e);
-      }
 
       if (mostSimilarId) {
         Tree.addIdeaNear(idea, mostSimilarId, allIdeas);
