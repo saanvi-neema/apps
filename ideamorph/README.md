@@ -23,7 +23,7 @@ Built to demonstrate how creativity emerges from recombination across semantic d
 |---|---|
 | Backend | Python + FastAPI |
 | LLM | Groq API — Llama 3.3-70b (free tier, key lives on server) |
-| Embeddings | `sentence-transformers` — `all-MiniLM-L6-v2` (local, no API key needed) |
+| Embeddings | `sentence-transformers` — `paraphrase-MiniLM-L12-v2` (local, no API key needed) |
 | Graph | D3.js v7 — radial tree layout |
 | Frontend | Vanilla HTML + CSS + JS (served by FastAPI) |
 | Deploy | Render.com |
@@ -54,7 +54,7 @@ python -m uvicorn main:app --reload
 
 Open **http://localhost:8000**
 
-The first startup downloads `all-MiniLM-L6-v2` (~80 MB) and caches it locally. Every startup after that is fast.
+The first startup downloads `paraphrase-MiniLM-L12-v2` (~120 MB) and caches it locally. Every startup after that is fast.
 
 ---
 

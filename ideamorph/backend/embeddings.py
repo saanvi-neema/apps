@@ -7,7 +7,7 @@ _model: SentenceTransformer | None = None
 def get_model() -> SentenceTransformer:
     global _model
     if _model is None:
-        _model = SentenceTransformer("all-mpnet-base-v2")
+        _model = SentenceTransformer("paraphrase-MiniLM-L12-v2")
     return _model
 
 

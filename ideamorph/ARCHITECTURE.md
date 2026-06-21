@@ -15,7 +15,7 @@ novelty, diversity, and usefulness.
 
 Two neural networks power the app, with very different roles:
 
-**`all-MiniLM-L6-v2`** — a 22M parameter transformer (BERT-based, MiniLM architecture) from the `sentence-transformers` library. Runs locally on the server with no API key. It takes any text and outputs a 384-dimensional vector (an "embedding") that captures its meaning. Similar ideas end up with similar vectors. This is used for everything mathematical: novelty scoring, diversity scoring, placing human ideas next to their semantic neighbors, and computing session-wide spread.
+**`paraphrase-MiniLM-L12-v2`** — a 33M parameter transformer from the `sentence-transformers` library. Runs locally on the server with no API key. It takes any text and outputs a 384-dimensional vector (an "embedding") that captures its meaning. Similar ideas end up with similar vectors. This is used for everything mathematical: novelty scoring, diversity scoring, placing human ideas next to their semantic neighbors, and computing session-wide spread.
 
 **Llama 3.3-70b`** — a 70 billion parameter large language model, accessed via the Groq API. Handles everything that requires language understanding and generation: producing seed ideas, writing hybrid offspring, extracting principles from parent ideas, and judging usefulness (feasibility, impact, specificity).
 
@@ -51,7 +51,7 @@ BACKEND  (Python / FastAPI)
 │     └───────┬────────┘
 │             │
 │     ┌───────┴────────────────────┐
-│     │  sentence-transformers     │  (all-MiniLM-L6-v2 — local, no API key)
+│     │  sentence-transformers     │  (paraphrase-MiniLM-L12-v2 — local, no API key)
 │     │  384-dim embeddings        │
 │     └────────────────────────────┘
 ```
@@ -103,7 +103,7 @@ On Render free tier the server sleeps after inactivity, wiping everything.
 ---
 
 #### `embeddings.py`
-Uses `sentence-transformers` with `all-MiniLM-L6-v2` (22M params, runs on CPU, ~80MB).
+Uses `sentence-transformers` with `paraphrase-MiniLM-L12-v2` (33M params, runs on CPU, ~120MB).
 Embeddings are L2-normalized so cosine similarity = dot product.
 
 Key functions:
@@ -367,7 +367,7 @@ python -m uvicorn main:app --reload
 # Open http://localhost:8000
 ```
 
-The first startup downloads `all-MiniLM-L6-v2` (~80MB) and caches it.
+The first startup downloads `paraphrase-MiniLM-L12-v2` (~120MB) and caches it.
 Subsequent starts are fast.
 
 ---
@@ -391,7 +391,7 @@ The `/health` endpoint returns `{"model_loaded": true}` when ready.
 |---|---|---|
 | State is in RAM only | session_store.py | Server restart = lost sessions |
 | Render sleeps on free tier | render.yaml | Cold start ~90s; sleeping wipes RAM |
-| First startup downloads model | embeddings.py | ~80MB, one-time per environment |
+| First startup downloads model | embeddings.py | ~120MB, one-time per environment |
 | LLM JSON parsing can fail | llm.py `_parse_json` | Bad model output → 500 error |
 | Node positions are immutable | tree.js | Never reposition already-placed nodes |
 | Diversity is gen-wide | embeddings.py | Same value for all ideas in a generation |
