@@ -29,7 +29,7 @@ const App = (() => {
   const loadingOverlay     = document.getElementById('loading-overlay');
   const loadingText        = document.getElementById('loading-text');
   const tooltip            = document.getElementById('tooltip');
-  const treeContainer      = document.getElementById('tree-container');
+  const treeSvg            = document.getElementById('tree-svg');
 
   // Popup DOM refs
   const nodePopup       = document.getElementById('node-popup');
@@ -325,7 +325,7 @@ const App = (() => {
     appMutationSlider.value = mutStrength;
     appMutationVal.textContent = mutStrength.toFixed(2);
 
-    Tree.init(treeContainer, showTooltip, showNodePopup);
+    Tree.init(treeSvg, showTooltip, showNodePopup);
 
     showLoading('Generating seed ideas…');
     state = 'STARTING';
@@ -495,5 +495,5 @@ const App = (() => {
   });
 
   // Window resize
-  window.addEventListener('resize', () => Tree.resize(treeContainer));
+  window.addEventListener('resize', () => Tree.resize(treeSvg));
 })();
