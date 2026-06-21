@@ -56,11 +56,6 @@ class IdeaNodeOut(BaseModel):
     disliked: bool
 
 
-class AddHumanIdeaResponse(BaseModel):
-    idea: IdeaNodeOut
-    most_similar_id: str | None = None
-
-
 class StartResponse(BaseModel):
     session_id: str
     ideas: list[IdeaNodeOut]

@@ -14,10 +14,9 @@ load_dotenv()
 
 from embeddings import embed_batch, embed_text, semantic_spread, compute_semantic_angles
 from evolution import compute_scores, select_parent_pairs
-from llm import generate_hybrid, generate_seeds, generate_fresh_injection, find_most_similar_idea
+from llm import generate_hybrid, generate_seeds, generate_fresh_injection
 from models import (
     AddHumanIdeaRequest,
-    AddHumanIdeaResponse,
     EditIdeaRequest,
     EvolveRequest,
     EvolveResponse,
@@ -201,7 +200,7 @@ def edit_idea(req: EditIdeaRequest):
     return idea_to_out(idea)
 
 
-@app.post("/api/add-human-idea", response_model=AddHumanIdeaResponse)
+@app.post("/api/add-human-idea", response_model=IdeaNodeOut)
 def add_human_idea(req: AddHumanIdeaRequest):
     session = get_session(req.session_id)
     if not session:
@@ -220,21 +219,7 @@ def add_human_idea(req: AddHumanIdeaRequest):
     )
     add_idea(session, node)
     recompute_angles_for_generation(session, session.current_generation)
-
-    # Use LLM to find the most thematically similar existing idea in this generation
-    candidates = [
-        {"id": i.id, "text": i.text}
-        for i in get_generation_ideas(session, session.current_generation)
-        if i.id != node.id
-    ]
-    most_similar_id = None
-    if candidates:
-        try:
-            most_similar_id = find_most_similar_idea(node.text, candidates)
-        except Exception:
-            pass
-
-    return AddHumanIdeaResponse(idea=idea_to_out(node), most_similar_id=most_similar_id)
+    return idea_to_out(node)
 
 
 @app.post("/api/evolve", response_model=EvolveResponse)

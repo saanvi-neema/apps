@@ -144,30 +144,6 @@ Respond with this exact JSON:
     return result["idea"]
 
 
-def find_most_similar_idea(human_idea: str, candidates: list[dict]) -> str:
-    """
-    Returns the id of the candidate most thematically similar to human_idea.
-    Uses LLM to judge by underlying theme, not surface keywords.
-    """
-    candidates_text = "\n".join(f"{i+1}. [ID:{c['id']}] {c['text']}" for i, c in enumerate(candidates))
-    system = (
-        "You are a semantic similarity judge. Given a new idea and a list of existing ideas, "
-        "identify which existing idea is most thematically and conceptually related to the new idea. "
-        "Focus on underlying themes, mechanisms, and approaches — not surface-level word overlap. "
-        "Respond only with valid JSON."
-    )
-    user = f"""New idea: "{human_idea}"
-
-Existing ideas:
-{candidates_text}
-
-Which existing idea shares the most similar underlying theme or approach with the new idea?
-Respond with this exact JSON: {{"most_similar_id": "<ID from the list above>"}}"""
-
-    result = _parse_json(_chat(system, user))
-    return result["most_similar_id"]
-
-
 def score_usefulness(idea: str, problem: str) -> dict:
     """Returns dict with keys: feasibility, impact, specificity, reasoning"""
     system = (
