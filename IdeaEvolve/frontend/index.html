@@ -1,0 +1,136 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>IdeaMorph</title>
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet" />
+  <link rel="stylesheet" href="/static/style.css" />
+  <!-- Three.js (global build) + OrbitControls -->
+  <script src="https://unpkg.com/three@0.128.0/build/three.min.js"></script>
+  <script src="https://unpkg.com/three@0.128.0/examples/js/controls/OrbitControls.js"></script>
+</head>
+<body>
+
+  <!-- INTRO SCREEN -->
+  <div id="intro-screen">
+    <div class="intro-inner">
+      <div class="intro-label">IDEAMORPH</div>
+      <h1 class="intro-title">What problem do you want to solve?</h1>
+      <p class="intro-sub">AI and human ideas will evolve together — combining, mutating, and growing more novel over generations.</p>
+      <div class="intro-input-row">
+        <input id="problem-input" type="text" placeholder="e.g. How can we reduce plastic waste at schools?" autocomplete="off" />
+        <button id="start-btn">Explore →</button>
+      </div>
+      <div class="intro-footer">
+        <span class="mutation-label">Mutation Strength</span>
+        <div class="slider-row">
+          <span class="slider-tick">Refine</span>
+          <input id="mutation-slider" type="range" min="0.1" max="1.0" step="0.05" value="0.5" />
+          <span class="slider-tick">Explore</span>
+        </div>
+        <p class="mutation-hint">Controls how different each new generation of ideas is from the last. Refine = ideas stay close to the original. Explore = ideas get wilder and more unexpected.</p>
+      </div>
+      <div id="intro-error" class="error-msg"></div>
+    </div>
+  </div>
+
+  <!-- MAIN APP -->
+  <div id="app" class="hidden">
+
+    <header class="app-header">
+      <div class="header-left">
+        <span class="app-title">IDEAMORPH</span>
+        <span id="header-problem" class="header-problem"></span>
+      </div>
+      <div class="header-right">
+        <span class="mutation-label-sm">Mutation</span>
+        <input id="app-mutation-slider" type="range" min="0.1" max="1.0" step="0.05" value="0.5" />
+        <span id="app-mutation-val" class="mutation-val">0.5</span>
+        <button id="reset-btn" class="btn-ghost">↩ New Problem</button>
+      </div>
+    </header>
+
+    <div class="app-body">
+
+      <!-- TREE CANVAS -->
+      <div class="canvas-wrap">
+        <div id="tree-container"></div>
+        <div id="tooltip" class="tooltip hidden"></div>
+
+        <!-- NODE POPUP -->
+        <div id="node-popup" class="node-popup hidden">
+          <button class="popup-close" id="popup-close">×</button>
+          <div class="popup-idea-text" id="popup-idea-text"></div>
+          <div class="popup-actions">
+            <button class="popup-btn like"    id="popup-like-btn">👍 Like</button>
+            <button class="popup-btn dislike" id="popup-dislike-btn">👎 Dislike</button>
+            <button class="popup-btn edit"    id="popup-edit-btn">✏️ Edit</button>
+            <button class="popup-btn child"   id="popup-child-btn">➕ Add Child</button>
+          </div>
+          <div class="popup-edit-area" id="popup-edit-area">
+            <textarea id="popup-edit-textarea" placeholder="Edit this idea…"></textarea>
+            <button class="popup-save-btn" id="popup-save-btn">Save Changes</button>
+          </div>
+        </div>
+
+        <div id="loading-overlay" class="loading-overlay hidden">
+          <div class="spinner"></div>
+          <span id="loading-text">Generating ideas…</span>
+        </div>
+      </div>
+
+      <!-- METRICS PANEL -->
+      <aside class="metrics-panel">
+        <div class="panel-section">
+          <div class="panel-title">EVOLUTION CHART</div>
+          <svg id="chart-svg"></svg>
+          <div class="chart-legend">
+            <span class="legend-dot ai"></span>Novelty
+            <span class="legend-dot hybrid"></span>Diversity
+            <span class="legend-dot human"></span>Usefulness
+          </div>
+        </div>
+
+        <div class="panel-section" id="gen-cards-section">
+          <div class="panel-title">GENERATIONS</div>
+          <div id="gen-cards"></div>
+        </div>
+
+        <div class="panel-section" id="best-idea-section" style="display:none">
+          <div class="panel-title">BEST IDEA</div>
+          <div id="best-idea-card" class="best-card"></div>
+        </div>
+
+        <div class="panel-section">
+          <div class="panel-title">SESSION STATS</div>
+          <div class="stats-grid">
+            <div class="stat"><span id="stat-total">0</span><label>Ideas</label></div>
+            <div class="stat"><span id="stat-gens">0</span><label>Generations</label></div>
+            <div class="stat"><span id="stat-spread">—</span><label>Spread</label></div>
+            <div class="stat"><span id="stat-peak">—</span><label>Peak Novelty</label></div>
+          </div>
+        </div>
+      </aside>
+    </div>
+
+    <!-- BOTTOM BAR -->
+    <div class="bottom-bar">
+      <div class="bottom-problem" id="bottom-problem"></div>
+      <div class="bottom-actions">
+        <input id="human-idea-input" type="text" placeholder="Add your own idea…" autocomplete="off" />
+        <button id="add-human-btn" class="btn-human">+ Add Idea</button>
+        <button id="evolve-btn" class="btn-evolve" disabled>Evolve → Gen 1</button>
+      </div>
+    </div>
+
+  </div>
+
+  <script src="https://d3js.org/d3.v7.min.js"></script>
+  <script src="/static/dashboard.js?v=10"></script>
+  <script src="/static/tree.js?v=10"></script>
+  <script src="/static/app.js?v=10"></script>
+</body>
+</html>
